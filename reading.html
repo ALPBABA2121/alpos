@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="lock.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F0E0C">
+<title>Reading · Dashboard</title>
+<script src="topbar.js" defer></script>
+
+<style>
+/* Shared dashboard base (same as template.html); theme.css restyles it. */
+:root {
+  --text-primary: #EDE6D8;
+  --text-secondary: #B5AD9F;
+  --text-tertiary: #7D766A;
+  --success: #9DB89F;
+  --warning: #C9A96E;
+  --danger:  #C98A7A;
+  --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: #0F0E0C;
+  color: var(--text-secondary);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  padding: max(28px, env(safe-area-inset-top)) 20px 60px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  animation: drift 36s ease-in-out infinite alternate;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes drift {
+  0%   { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-22px, 14px, 0); }
+}
+.page { max-width: 1100px; margin: 0 auto; }
+.dash-title { margin: 0 0 14px; }
+
+.section { margin-top: 8px; }
+.section-title {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-tertiary);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.section-title::before { content: ''; width: 18px; height: 1px; background: var(--text-tertiary); opacity: 0.6; }
+.section-title::after  { content: ''; flex: 1; height: 1px; }
+
+.gm-card {
+  position: relative;
+  padding: 20px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  overflow: hidden;
+}
+.gm-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 14px;
+}
+.gm-header-left { display: flex; flex-direction: column; }
+.gm-eyebrow {
+  font-size: 10.5px; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 6px;
+}
+.gm-progress-row { display: flex; align-items: baseline; gap: 6px; }
+.gm-progress-num { color: var(--text-primary); line-height: 1; }
+.gm-progress-total { font-family: var(--font-mono); font-size: 18px; color: var(--text-tertiary); }
+.gm-progress-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-left: 4px;
+}
+.gm-streak {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: 999px;
+  background: rgba(237,230,216,0.04);
+  border: 1px solid rgba(237,230,216,0.07);
+  color: var(--text-tertiary);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.stat { border: 1px solid; border-radius: 12px; padding: 14px; }
+.stat-num { color: var(--text-primary); line-height: 1; }
+.stat-label {
+  margin-top: 6px;
+  font-size: 10.5px; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.goal-list { list-style: none; margin: 0; padding: 0; }
+.empty-state {
+  text-align: center; font-size: 12px; font-style: italic;
+  color: var(--text-tertiary); padding: 14px 0;
+}
+.gm-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; margin-bottom: 6px;
+  border: 1px solid;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.gm-row:hover { background: rgba(237,230,216,0.05); }
+.goal-delete {
+  border: 0; background: transparent; color: var(--text-tertiary);
+  font-size: 18px; cursor: pointer; padding: 0 4px;
+  opacity: 0.5; transition: opacity 0.2s, color 0.2s;
+}
+.gm-row:hover .goal-delete, .book:hover .goal-delete { opacity: 1; }
+.goal-delete:hover { color: var(--danger); }
+
+.gm-input-wrap {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(237,230,216,0.06);
+}
+.gm-input {
+  flex: 1; min-width: 0;
+  padding: 11px 14px;
+  border: 1px solid rgba(237,230,216,0.08);
+  border-radius: 12px; background: rgba(0,0,0,0.28);
+  color: var(--text-primary);
+  font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  color-scheme: dark;
+}
+.gm-input::placeholder { color: var(--text-tertiary); }
+.gm-add {
+  padding: 11px 20px; border: 0; border-radius: 12px;
+  font-family: inherit; font-size: 13px;
+  cursor: pointer; white-space: nowrap;
+  transition: transform 0.1s, filter 0.15s;
+}
+.gm-add:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.gm-ghost {
+  padding: 11px 18px;
+  border: 1px solid; border-radius: 12px;
+  font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+/* ---------- Reading-specific ---------- */
+.add-form {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 0.8fr 1fr auto;
+  gap: 10px; align-items: end;
+}
+.add-form label {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.add-form select.gm-input { appearance: none; -webkit-appearance: none; cursor: pointer; }
+@media (max-width: 760px) {
+  .add-form { grid-template-columns: 1fr 1fr; }
+  .add-form .af-title { grid-column: 1 / -1; }
+  .add-form .gm-add { grid-column: 1 / -1; }
+}
+
+.book {
+  padding: 20px 22px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(237,230,216,0.07);
+  border-radius: 16px;
+  background: rgba(237,230,216,0.025);
+}
+.book:last-child { margin-bottom: 0; }
+.book-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.book-title {
+  font-family: var(--lux-serif, Georgia, serif);
+  font-size: 24px; font-weight: 500; line-height: 1.15;
+  color: var(--text-primary);
+}
+.book-author {
+  margin-top: 3px;
+  font-family: var(--lux-serif, Georgia, serif);
+  font-style: italic; font-size: 16px;
+  color: var(--text-tertiary);
+}
+.book-bar {
+  height: 3px; margin: 16px 0 8px;
+  border-radius: 2px; overflow: hidden;
+  background: rgba(237,230,216,0.08);
+}
+.book-bar > i {
+  display: block; height: 100%;
+  background: var(--lux-gold, #C9A96E);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.book-meta {
+  display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.book-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.book-actions .gm-input { flex: 0 1 170px; }
+
+.row-main { flex: 1; min-width: 0; }
+.row-title {
+  font-family: var(--lux-serif, Georgia, serif);
+  font-size: 19px; font-weight: 500; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.row-sub {
+  margin-top: 2px;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.row-btn { padding: 7px 14px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.goal-edit {
+  width: 56px; padding: 0 4px; margin: 0 2px;
+  border: 0; border-bottom: 1px solid var(--lux-gold, #C9A96E);
+  background: transparent; color: var(--text-primary);
+  font: inherit; text-align: center; outline: none;
+}
+button.gm-streak { cursor: pointer; font-family: inherit; }
+button.gm-streak:hover { border-color: rgba(201,169,110,0.4); color: var(--text-secondary); }
+
+@media (max-width: 480px) {
+  body { padding: max(20px, env(safe-area-inset-top)) 14px 50px; }
+  .gm-card { padding: 16px; }
+  .book { padding: 16px; }
+}
+</style>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<div class="page">
+  <h1 class="dash-title">Reading</h1>
+
+  <!-- Overview -->
+  <div class="section">
+    <div class="section-title" id="yearLabel">This Year</div>
+    <div class="gm-card">
+      <div class="gm-header">
+        <div class="gm-header-left">
+          <div class="gm-eyebrow">Books finished</div>
+          <div class="gm-progress-row">
+            <span class="gm-progress-num" id="finishedNum">0</span>
+            <span class="gm-progress-total" id="goalTotal">/ 12</span>
+            <span class="gm-progress-label">goal</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="gm-streak" id="streakPill">0 day streak</span>
+          <button class="gm-streak" id="goalBtn" type="button" title="Change yearly goal">Set goal</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-num" id="stWeek">0</div><div class="stat-label">Pages this week</div></div>
+        <div class="stat"><div class="stat-num" id="stAvg">0</div><div class="stat-label">Avg pages / day</div></div>
+        <div class="stat"><div class="stat-num" id="stReading">0</div><div class="stat-label">Reading now</div></div>
+        <div class="stat"><div class="stat-num" id="stTotal">0</div><div class="stat-label">Pages all time</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Currently reading -->
+  <div class="section">
+    <div class="section-title">Currently Reading</div>
+    <div class="gm-card" id="readingList"></div>
+  </div>
+
+  <!-- Add a book -->
+  <div class="section">
+    <div class="section-title">Add a Book</div>
+    <div class="gm-card">
+      <form class="add-form" id="addForm" autocomplete="off">
+        <label class="af-title">Title<input class="gm-input" id="fTitle" type="text" placeholder="e.g. Meditations" required></label>
+        <label>Author<input class="gm-input" id="fAuthor" type="text" placeholder="Marcus Aurelius"></label>
+        <label>Pages<input class="gm-input" id="fPages" type="number" min="1" inputmode="numeric" placeholder="256"></label>
+        <label>Status
+          <select class="gm-input" id="fStatus">
+            <option value="reading">Reading now</option>
+            <option value="toread">Want to read</option>
+          </select>
+        </label>
+        <button class="gm-add" type="submit">Add book</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Up next -->
+  <div class="section">
+    <div class="section-title">Up Next</div>
+    <div class="gm-card"><ul class="goal-list" id="nextList"></ul></div>
+  </div>
+
+  <!-- Finished -->
+  <div class="section">
+    <div class="section-title">Finished</div>
+    <div class="gm-card">
+      <ul class="goal-list" id="doneList"></ul>
+      <div class="gm-input-wrap">
+        <button class="gm-ghost" id="exportBtn" type="button">Export backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Everything is saved in this browser under one key.
+  // books: [{id, title, author, pages, current, status:'reading'|'toread'|'finished', added, started, finished}]
+  // log:   [{date:'YYYY-MM-DD', bookId, pages}]  — pages read that day
+  const STORE_KEY = 'reading:data';
+  const DEFAULT_GOAL = 12;
+
+  const $ = id => document.getElementById(id);
+
+  // ---------- storage ----------
+  function load() {
+    let d;
+    try { d = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) { d = null; }
+    d = d && typeof d === 'object' ? d : {};
+    d.books = Array.isArray(d.books) ? d.books : [];
+    d.log = Array.isArray(d.log) ? d.log : [];
+    d.goal = +d.goal > 0 ? +d.goal : DEFAULT_GOAL;
+    return d;
+  }
+  function save(d) { localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  // ---------- dates ----------
+  function fmtDate(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function todayStr() { return fmtDate(new Date()); }
+  function addDays(str, n) {
+    const p = str.split('-');
+    return fmtDate(new Date(+p[0], +p[1] - 1, +p[2] + n));
+  }
+  function prettyDate(str) {
+    const p = str.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function num(n) { return Math.round(n).toLocaleString(); }
+
+  // ---------- actions ----------
+  function logPages(d, bookId, pages) {
+    if (pages <= 0) return;
+    const today = todayStr();
+    const existing = d.log.find(l => l.date === today && l.bookId === bookId);
+    if (existing) existing.pages += pages;
+    else d.log.push({ date: today, bookId: bookId, pages: pages });
+  }
+
+  function setPage(id, page) {
+    const d = load();
+    const b = d.books.find(x => x.id === id);
+    if (!b) return;
+    page = Math.max(0, Math.round(page));
+    if (b.pages) page = Math.min(page, b.pages);
+    logPages(d, id, page - (b.current || 0));
+    b.current = page;
+    if (b.pages && page >= b.pages) finishBook(d, b);
+    save(d); render();
+  }
+
+  function finishBook(d, b) {
+    if (b.pages) { logPages(d, b.id, b.pages - (b.current || 0)); b.current = b.pages; }
+    b.status = 'finished';
+    b.finished = todayStr();
+  }
+
+  function startBook(id) {
+    const d = load();
+    const b = d.books.find(x => x.id === id);
+    if (!b) return;
+    b.status = 'reading';
+    b.started = b.started || todayStr();
+    save(d); render();
+  }
+
+  function removeBook(id) {
+    const d = load();
+    const b = d.books.find(x => x.id === id);
+    if (!b || !confirm('Remove "' + b.title + '"? Its reading history stays in your stats.')) return;
+    d.books = d.books.filter(x => x.id !== id);
+    save(d); render();
+  }
+
+  // ---------- stats ----------
+  function stats(d) {
+    const today = todayStr();
+    const year = today.slice(0, 4);
+    const byDay = {};
+    d.log.forEach(l => { byDay[l.date] = (byDay[l.date] || 0) + l.pages; });
+
+    let week = 0, last30 = 0, total = 0;
+    Object.keys(byDay).forEach(date => {
+      total += byDay[date];
+      if (date > addDays(today, -7)) week += byDay[date];
+      if (date > addDays(today, -30)) last30 += byDay[date];
+    });
+
+    let cursor = byDay[today] ? today : addDays(today, -1);
+    let streak = 0;
+    while (byDay[cursor]) { streak++; cursor = addDays(cursor, -1); }
+
+    return {
+      year: year,
+      finished: d.books.filter(b => b.status === 'finished' && (b.finished || '').slice(0, 4) === year).length,
+      reading: d.books.filter(b => b.status === 'reading').length,
+      week: week, avg: last30 / 30, total: total, streak: streak
+    };
+  }
+
+  // ---------- render ----------
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function empty(msg) { return el('li', 'empty-state', msg); }
+
+  function renderReading(d) {
+    const wrap = $('readingList');
+    wrap.innerHTML = '';
+    const books = d.books.filter(b => b.status === 'reading');
+    if (!books.length) {
+      wrap.appendChild(el('div', 'empty-state', 'Nothing on the go — add a book below, or start one from Up Next.'));
+      return;
+    }
+    books.forEach(b => {
+      const card = el('div', 'book');
+      const top = el('div', 'book-top');
+      const info = el('div');
+      info.append(el('div', 'book-title', b.title));
+      if (b.author) info.append(el('div', 'book-author', b.author));
+      const del = el('button', 'goal-delete', '×');
+      del.type = 'button'; del.title = 'Remove'; del.setAttribute('aria-label', 'Remove ' + b.title);
+      del.addEventListener('click', () => removeBook(b.id));
+      top.append(info, del);
+
+      const pct = b.pages ? Math.min(100, Math.round((b.current || 0) / b.pages * 100)) : 0;
+      const bar = el('div', 'book-bar');
+      const fill = el('i'); fill.style.width = pct + '%';
+      bar.appendChild(fill);
+
+      const meta = el('div', 'book-meta');
+      meta.append(
+        el('span', null, b.pages ? 'Page ' + num(b.current || 0) + ' of ' + num(b.pages) : 'Page ' + num(b.current || 0)),
+        el('span', null, b.pages ? pct + '%' + (b.pages - (b.current || 0) > 0 ? ' · ' + num(b.pages - (b.current || 0)) + ' left' : '') : '')
+      );
+
+      const actions = el('form', 'book-actions');
+      const input = el('input', 'gm-input');
+      input.type = 'number'; input.min = '0'; input.inputMode = 'numeric';
+      if (b.pages) input.max = String(b.pages);
+      input.placeholder = 'Now on page…';
+      input.setAttribute('aria-label', 'Current page of ' + b.title);
+      const upd = el('button', 'gm-ghost', 'Update');
+      upd.type = 'submit';
+      const done = el('button', 'gm-add', 'Finished');
+      done.type = 'button';
+      actions.addEventListener('submit', e => {
+        e.preventDefault();
+        if (input.value !== '') setPage(b.id, +input.value);
+      });
+      done.addEventListener('click', () => {
+        const dd = load(); const bb = dd.books.find(x => x.id === b.id);
+        if (bb) { finishBook(dd, bb); save(dd); render(); }
+      });
+      actions.append(input, upd, done);
+
+      card.append(top, bar, meta, actions);
+      wrap.appendChild(card);
+    });
+  }
+
+  function renderNext(d) {
+    const list = $('nextList');
+    list.innerHTML = '';
+    const books = d.books.filter(b => b.status === 'toread');
+    if (!books.length) { list.appendChild(empty('Your reading list is empty.')); return; }
+    books.forEach(b => {
+      const li = el('li', 'gm-row');
+      const main = el('div', 'row-main');
+      main.append(el('div', 'row-title', b.title));
+      main.append(el('div', 'row-sub', [b.author, b.pages ? num(b.pages) + ' pages' : ''].filter(Boolean).join(' · ') || 'Want to read'));
+      const start = el('button', 'gm-ghost row-btn', 'Start');
+      start.type = 'button';
+      start.addEventListener('click', () => startBook(b.id));
+      const del = el('button', 'goal-delete', '×');
+      del.type = 'button'; del.setAttribute('aria-label', 'Remove ' + b.title);
+      del.addEventListener('click', () => removeBook(b.id));
+      li.append(main, start, del);
+      list.appendChild(li);
+    });
+  }
+
+  function renderDone(d) {
+    const list = $('doneList');
+    list.innerHTML = '';
+    const books = d.books.filter(b => b.status === 'finished')
+      .sort((a, b) => (b.finished || '').localeCompare(a.finished || ''));
+    if (!books.length) { list.appendChild(empty('No finished books yet.')); return; }
+    books.forEach(b => {
+      const li = el('li', 'gm-row');
+      const main = el('div', 'row-main');
+      main.append(el('div', 'row-title', b.title));
+      main.append(el('div', 'row-sub', [b.author, b.finished ? 'Finished ' + prettyDate(b.finished) : ''].filter(Boolean).join(' · ')));
+      const del = el('button', 'goal-delete', '×');
+      del.type = 'button'; del.setAttribute('aria-label', 'Remove ' + b.title);
+      del.addEventListener('click', () => removeBook(b.id));
+      li.append(main, del);
+      list.appendChild(li);
+    });
+  }
+
+  function render() {
+    const d = load();
+    const s = stats(d);
+    $('yearLabel').textContent = s.year;
+    $('finishedNum').textContent = s.finished;
+    $('goalTotal').textContent = '/ ' + d.goal;
+    $('goalBtn').textContent = 'Goal · ' + d.goal + ' books';
+    $('streakPill').textContent = s.streak + ' day streak';
+    $('stWeek').textContent = num(s.week);
+    $('stAvg').textContent = num(s.avg);
+    $('stReading').textContent = s.reading;
+    $('stTotal').textContent = num(s.total);
+    renderReading(d);
+    renderNext(d);
+    renderDone(d);
+  }
+
+  // ---------- add ----------
+  $('addForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = $('fTitle').value.trim();
+    if (!title) { $('fTitle').focus(); return; }
+    const d = load();
+    const status = $('fStatus').value;
+    d.books.push({
+      id: uid(),
+      title: title,
+      author: $('fAuthor').value.trim(),
+      pages: Math.max(0, Math.round(+$('fPages').value || 0)),
+      current: 0,
+      status: status,
+      added: todayStr(),
+      started: status === 'reading' ? todayStr() : null,
+      finished: null
+    });
+    save(d);
+    e.target.reset();
+    $('fTitle').focus();
+    render();
+  });
+
+  // ---------- yearly goal (inline edit) ----------
+  $('goalBtn').addEventListener('click', function () {
+    const btn = this;
+    if (btn.querySelector('input')) return;
+    const d = load();
+    btn.textContent = 'Goal · ';
+    const inp = el('input', 'goal-edit');
+    inp.type = 'number'; inp.min = '1'; inp.value = d.goal;
+    btn.appendChild(inp);
+    btn.appendChild(document.createTextNode(' books'));
+    inp.focus(); inp.select();
+    function commit() {
+      const v = Math.round(+inp.value);
+      const dd = load();
+      if (v > 0) { dd.goal = v; save(dd); }
+      render();
+    }
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') render();
+    });
+    inp.addEventListener('blur', commit);
+    inp.addEventListener('click', e => e.stopPropagation());
+  });
+
+  // ---------- backup ----------
+  $('exportBtn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(load(), null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'reading-backup-' + todayStr() + '.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

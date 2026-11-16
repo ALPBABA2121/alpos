@@ -167,3 +167,84 @@ h1, h2,
 .gm-progress-num, .stat-num, .dash-title, .po-title, h1, h2 {
   font-variant-numeric: lining-nums tabular-nums;
 }
+
+/* =============================================================
+   POLISH PASS — page-specific refinements
+   ============================================================= */
+
+/* ---------- Topbar spans the full width on template-style pages
+   (hub, Main, Sleep, template) instead of sitting indented. ---------- */
+body:has(> .page) {
+  padding-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+body:has(> .page) > .page {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 40px;
+}
+@media (max-width: 480px) {
+  body:has(> .page) > .page { padding-left: 14px; padding-right: 14px; margin-top: 28px; }
+}
+
+/* ---------- Primary actions: champagne, not bright white ---------- */
+.gm-add, .po-btn-primary, .po-tw-done-btn, .water-plus-btn, .btn-primary,
+.stack-add-btn, .stack-add-btn:hover {
+  background: linear-gradient(180deg, #D9BD86 0%, #B8975C 100%);
+  color: #1A160F;
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 244, 220, 0.45),
+    0 6px 20px rgba(0, 0, 0, 0.35);
+}
+.po-btn-primary:hover, .po-tw-done-btn:hover, .water-plus-btn:hover, .btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+/* ---------- Selected segments & pills: soft gold tint ---------- */
+.po-seg-btn.active, .po-reps-pill.active, .po-modal-seg button.active, .seg button.active {
+  background: rgba(201, 169, 110, 0.16);
+  color: var(--lux-ivory);
+  border-color: rgba(201, 169, 110, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.32);
+}
+.stack-progress-fill { background: var(--lux-gold); }
+
+/* ---------- Serif numbers & headings ---------- */
+.water-num, .wish-hero-num, #netWorthTotal, #subsTotal, .sf-title, .day-ring-percent {
+  font-family: var(--lux-serif) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.015em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.water-num { font-size: 64px; }
+#netWorthTotal { font-size: 46px !important; }
+#subsTotal { font-size: 36px !important; }
+.sf-title { font-size: 32px; line-height: 1.1; color: var(--lux-ivory); }
+
+/* ---------- Emoji out, quiet type in ---------- */
+.stack-window-icon, .stack-result-icon, .date-emoji,
+.ord-empty-icon, .wish-empty-icon, .gm-streak-icon {
+  display: none !important;
+}
+.section-title-text::before { content: none !important; }
+
+/* Finance bottom tabs: text-only, gold underline on the active one. */
+.bot-tab-icon { display: none; }
+.bot-tab {
+  padding: 14px 18px 12px;
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+}
+.bot-tab:hover { background: transparent; color: var(--lux-stone); }
+.bot-tab.active {
+  background: transparent;
+  color: var(--lux-ivory);
+  border-bottom-color: var(--lux-gold);
+}
+.bot-tab-label { font-weight: 600; letter-spacing: 0.22em; }
+.bottom-tabs::before {
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.22), transparent);
+}

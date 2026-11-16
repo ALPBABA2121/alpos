@@ -936,7 +936,7 @@ body::after {
       fillEl.style.stroke = '#4F4A42';
       percentEl.textContent = '—';
       phaseEl.textContent   = 'SLEEPING';
-      statusEl.textContent  = '😴 Still sleeping';
+      statusEl.textContent  = 'Still sleeping';
       const minsUntil = (WAKE_HOUR - hours) * 60;
       remainingEl.textContent = formatRemaining(minsUntil) + ' until wake-up';
       return;
@@ -947,7 +947,7 @@ body::after {
       fillEl.style.stroke = '#C98A7A';
       percentEl.textContent = '100%';
       phaseEl.textContent   = 'PAST BEDTIME';
-      statusEl.textContent  = '⚠️ Past bedtime';
+      statusEl.textContent  = 'Past bedtime';
       remainingEl.textContent = 'Sleep!';
       return;
     }

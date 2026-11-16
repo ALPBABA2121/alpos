@@ -16,6 +16,7 @@ Open any `.html` file directly in your browser — no build step, no install.
 |---|---|
 | [index.html](index.html) | Home hub — bento grid of links to every page |
 | [main.html](main.html) | Goals tracker (Day Ring, Goal Ticker, To Do list) |
+| [template.html](template.html) | Starter template for building new pages or sections in the same design |
 | [health.html](health.html) | Supplement / daily stack tracker |
 | [po-water.html](po-water.html) | Water intake tracker |
 | [finance.html](finance.html) | Finances |

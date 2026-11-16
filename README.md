@@ -14,7 +14,8 @@ Open any `.html` file directly in your browser — no build step, no install.
 
 | File | What it is |
 |---|---|
-| [index.html](index.html) | Goals tracker (Day Ring, Goal Ticker, To Do list) — the home page |
+| [index.html](index.html) | Home hub — bento grid of links to every page |
+| [main.html](main.html) | Goals tracker (Day Ring, Goal Ticker, To Do list) |
 | [health.html](health.html) | Supplement / daily stack tracker |
 | [po-water.html](po-water.html) | Water intake tracker |
 | [finance.html](finance.html) | Finances |
@@ -25,4 +26,4 @@ Each app stores its own state in browser `localStorage`. No accounts, no server.
 
 ## Building from scratch
 
-[BUILD_DASHBOARD.md](BUILD_DASHBOARD.md) is the prompt I gave Claude to generate `index.html` — paste it into Claude if you want to rebuild that page yourself.
+[BUILD_DASHBOARD.md](BUILD_DASHBOARD.md) is the prompt I gave Claude to generate `main.html` — paste it into Claude if you want to rebuild that page yourself.

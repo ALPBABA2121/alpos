@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- ============================================================= -->
+<!--  DASHBOARD SECTION TEMPLATE                                    -->
+<!--                                                                -->
+<!--  Copy this file to start a new page, OR copy one of the        -->
+<!--  "card" blocks below into an existing page to add a section.   -->
+<!--  Everything here uses the same colors, fonts, glass cards and  -->
+<!--  local storage as the rest of the dashboard, so anything you  -->
+<!--  build will automatically match the design.                    -->
+<!--                                                                -->
+<!--  QUICK START                                                   -->
+<!--   1. Rename the <title> below.                                 -->
+<!--   2. Find the block marked "COPY FROM HERE" and duplicate it   -->
+<!--      to make as many sections as you want.                     -->
+<!--   3. Give each section its own SECTION_ID (see the script at   -->
+<!--      the bottom) so it saves independently.            -->
+<!-- ============================================================= -->
+<script src="lock.js"></script>                                  <!-- passcode lock screen -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050506">
+<title>Sleep · Dashboard</title>
+
+<!-- Shared dashboard scripts. Keep these in this order. -->
+<script src="topbar.js" defer></script>   <!-- top water bar + bottom tab nav -->
+
+<style>
+/* ============================================================= */
+/*  DESIGN SYSTEM — these are the dashboard's shared tokens.      */
+/*  Don't change these if you want your section to match the      */
+/*  other pages. Use the variables (var(--text-primary), etc.)    */
+/*  instead of hard-coding colors.                                */
+/* ============================================================= */
+:root {
+  --text-primary: #FAFAFA;   /* headings, key numbers   */
+  --text-secondary: #B8B6B0; /* body text               */
+  --text-tertiary: #76746E;  /* labels, captions, hints */
+  --success: #6BE3A4;        /* green  — done / good    */
+  --warning: #F2C063;        /* amber  — caution        */
+  --danger:  #FF6B6B;        /* red    — bad / delete   */
+  --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: #050506;
+  color: var(--text-secondary);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  padding: max(28px, env(safe-area-inset-top)) 20px 60px;
+}
+/* Soft drifting color glow behind everything. */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(circle at 82% 14%, rgba(224, 118, 88, 0.16), transparent 45%),
+    radial-gradient(circle at 18% 90%, rgba(180, 180, 200, 0.06), transparent 50%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -2;
+  animation: drift 36s ease-in-out infinite alternate;
+}
+/* Faint dot texture. */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.014) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes drift {
+  0%   { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-22px, 14px, 0); }
+}
+
+.page { max-width: 1100px; margin: 0 auto; }
+
+/* Big gradient page title. */
+.dash-title {
+  margin: 0 0 14px;
+  font-size: 28px; font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(180deg, #FFFFFF 0%, #C7C4BC 120%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+@media (max-width: 480px) { .dash-title { font-size: 22px; } }
+
+/* Small uppercase section heading with a divider line. */
+.section { margin-top: 8px; }
+.section-title {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-tertiary);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.section-title::before {
+  content: ''; width: 18px; height: 1px;
+  background: var(--text-tertiary); opacity: 0.6;
+}
+.section-title::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
+}
+
+/* THE GLASS CARD — the main building block. Wrap any section in this. */
+.gm-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  overflow: hidden;
+}
+
+/* Card header: an eyebrow label + a big number. */
+.gm-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 14px;
+}
+.gm-header-left { display: flex; flex-direction: column; }
+.gm-eyebrow {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 6px;
+}
+.gm-progress-row { display: flex; align-items: baseline; gap: 6px; }
+.gm-progress-num {
+  font-size: 42px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em; color: var(--text-primary); line-height: 1;
+}
+.gm-progress-total { font-family: var(--font-mono); font-size: 18px; color: var(--text-tertiary); }
+.gm-progress-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-left: 4px;
+}
+
+/* A little rounded "pill" — handy for streaks, tags, statuses. */
+.gm-streak {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-tertiary);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+}
+
+/* Stat grid — a row of metrics. Auto-wraps on small screens. */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+.stat {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 14px;
+}
+.stat-num {
+  font-size: 26px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em; color: var(--text-primary); line-height: 1;
+}
+.stat-label {
+  margin-top: 6px;
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* List rows with a checkbox + editable text + delete button. */
+.goal-list { list-style: none; margin: 0; padding: 0; }
+.empty-state {
+  text-align: center; font-size: 12px; font-style: italic;
+  color: var(--text-tertiary); padding: 14px 0;
+}
+.gm-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; margin-bottom: 6px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  transition: background 0.2s, opacity 0.3s;
+}
+.gm-row:hover { background: rgba(255,255,255,0.06); }
+.gm-row.gm-row-done { opacity: 0.45; background: rgba(107,227,164,0.04); }
+.gm-row.gm-row-done .gm-text {
+  text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.4);
+}
+.gm-check {
+  appearance: none; -webkit-appearance: none;
+  width: 22px; height: 22px; flex-shrink: 0; margin: 0;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.28); border-radius: 7px;
+  position: relative; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.25s;
+}
+.gm-check:checked {
+  background: var(--success); border-color: var(--success);
+  box-shadow: 0 0 12px rgba(107,227,164,0.40);
+}
+.gm-check:checked::after {
+  content: ''; position: absolute; left: 6px; top: 2px;
+  width: 6px; height: 11px;
+  border: solid #0A0A0B; border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+.gm-text {
+  flex: 1; font-size: 14px; color: var(--text-primary);
+  outline: none; border-radius: 4px; padding: 2px 4px; margin: -2px -4px;
+}
+.gm-text[contenteditable="true"] {
+  outline: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.28);
+}
+.goal-delete {
+  border: 0; background: transparent; color: var(--text-tertiary);
+  font-size: 18px; cursor: pointer; padding: 0 4px;
+  opacity: 0.5; transition: opacity 0.2s, color 0.2s;
+}
+.gm-row:hover .goal-delete { opacity: 1; }
+.goal-delete:hover { color: var(--danger); }
+
+/* Add-item input row + buttons. */
+.gm-input-wrap {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.gm-input {
+  flex: 1; min-width: 0;
+  padding: 11px 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; background: rgba(0,0,0,0.28);
+  color: var(--text-primary);
+  font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.gm-input::placeholder { color: var(--text-tertiary); }
+.gm-input:focus { border-color: rgba(255,255,255,0.28); background: rgba(0,0,0,0.36); }
+
+/* Primary (light) button. */
+.gm-add {
+  padding: 11px 20px; border: 0; border-radius: 12px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #E8E5DD 100%);
+  color: #0A0A0B; font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 2px 8px rgba(0,0,0,0.35),
+    0 8px 22px rgba(0,0,0,0.25);
+  transition: transform 0.1s, filter 0.15s;
+}
+.gm-add:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.gm-add:active { transform: translateY(0); }
+
+/* Secondary (ghost) button. */
+.gm-ghost {
+  padding: 11px 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px; background: rgba(255,255,255,0.04);
+  color: var(--text-primary);
+  font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.gm-ghost:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.18); }
+
+@media (max-width: 480px) {
+  body { padding: max(20px, env(safe-area-inset-top)) 14px 50px; }
+  .gm-card { padding: 16px; }
+  .gm-progress-num { font-size: 36px; }
+}
+
+/* Sleep-specific bits */
+.sleep-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; align-items:end; }
+.sleep-form label { display:flex; flex-direction:column; gap:6px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-tertiary); }
+.sleep-form .gm-input { color-scheme: dark; }
+.sleep-dur { font-family:var(--font-mono); font-size:13px; color:var(--text-primary); white-space:nowrap; }
+.sleep-meta { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
+.sleep-bar { height:4px; border-radius:2px; background:rgba(255,255,255,0.08); margin-top:6px; overflow:hidden; }
+.sleep-bar > i { display:block; height:100%; border-radius:2px; background:var(--success); }
+.sleep-bar > i.low { background:var(--warning); }
+.sleep-bar > i.bad { background:var(--danger); }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="dash-title">Sleep</h1>
+
+  <div class="section">
+    <div class="section-title">Last 7 Nights</div>
+    <div class="gm-card">
+      <div class="gm-header">
+        <div class="gm-header-left">
+          <div class="gm-eyebrow">Average Sleep</div>
+          <div class="gm-progress-row">
+            <span class="gm-progress-num" id="avgNum">–</span>
+            <span class="gm-progress-total">/ 8h</span>
+            <span class="gm-progress-label">goal</span>
+          </div>
+        </div>
+        <span class="gm-streak" id="streakPill">0 night streak</span>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-num" id="stNights">0</div><div class="stat-label">Nights logged</div></div>
+        <div class="stat"><div class="stat-num" id="stBest">–</div><div class="stat-label">Best</div></div>
+        <div class="stat"><div class="stat-num" id="stWorst">–</div><div class="stat-label">Shortest</div></div>
+        <div class="stat"><div class="stat-num" id="stBed">–</div><div class="stat-label">Avg bedtime</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Log a Night</div>
+    <div class="gm-card">
+      <div class="sleep-form">
+        <label>Wake-up date<input class="gm-input" id="fDate" type="date"></label>
+        <label>Bedtime<input class="gm-input" id="fBed" type="time" value="23:30"></label>
+        <label>Wake time<input class="gm-input" id="fWake" type="time" value="07:30"></label>
+        <button class="gm-add" id="fAdd" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">History</div>
+    <div class="gm-card">
+      <ul class="goal-list" id="sleepList"></ul>
+      <div class="gm-input-wrap">
+        <button class="gm-ghost" id="exportBtn" type="button">Export backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const STORE_KEY = 'sleep:entries';   // [{date:'YYYY-MM-DD', bed:'HH:MM', wake:'HH:MM'}]
+  const GOAL = 8 * 60;                 // minutes
+
+  const $ = id => document.getElementById(id);
+  const listEl = $('sleepList');
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function save(items) { localStorage.setItem(STORE_KEY, JSON.stringify(items)); }
+
+  function toMin(hhmm) { const p = hhmm.split(':'); return +p[0] * 60 + +p[1]; }
+  function duration(e) {                 // handles crossing midnight
+    let d = toMin(e.wake) - toMin(e.bed);
+    if (d <= 0) d += 24 * 60;
+    return d;
+  }
+  function fmt(min) { return Math.floor(min / 60) + 'h ' + String(Math.round(min % 60)).padStart(2, '0') + 'm'; }
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function addDays(str, n) {
+    const p = str.split('-'); const d = new Date(+p[0], +p[1] - 1, +p[2] + n);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function prettyDate(str) {
+    const p = str.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+
+  function stats(items) {
+    const sorted = items.slice().sort((a, b) => b.date.localeCompare(a.date));
+    const last7 = sorted.filter(e => e.date > addDays(todayStr(), -7));
+    const durs = last7.map(duration);
+    const avg = durs.length ? durs.reduce((a, b) => a + b, 0) / durs.length : null;
+
+    // streak = consecutive days ending today or yesterday with >= 7h
+    const dates = new Set(sorted.filter(e => duration(e) >= 7 * 60).map(e => e.date));
+    let cursor = dates.has(todayStr()) ? todayStr() : addDays(todayStr(), -1);
+    let streak = 0;
+    while (dates.has(cursor)) { streak++; cursor = addDays(cursor, -1); }
+
+    // average bedtime (after-midnight bedtimes counted as late, not early)
+    let bed = null;
+    if (last7.length) {
+      const mins = last7.map(e => { let m = toMin(e.bed); if (m < 12 * 60) m += 24 * 60; return m; });
+      bed = (mins.reduce((a, b) => a + b, 0) / mins.length) % (24 * 60);
+    }
+    return { sorted, last7, durs, avg, streak, bed };
+  }
+
+  function render() {
+    const items = load();
+    const s = stats(items);
+
+    $('avgNum').textContent = s.avg == null ? '–' : (s.avg / 60).toFixed(1) + 'h';
+    $('streakPill').textContent = s.streak + ' night streak (7h+)';
+    $('stNights').textContent = s.last7.length;
+    $('stBest').textContent = s.durs.length ? fmt(Math.max.apply(null, s.durs)) : '–';
+    $('stWorst').textContent = s.durs.length ? fmt(Math.min.apply(null, s.durs)) : '–';
+    $('stBed').textContent = s.bed == null ? '–'
+      : String(Math.floor(s.bed / 60)).padStart(2, '0') + ':' + String(Math.round(s.bed % 60)).padStart(2, '0');
+
+    listEl.innerHTML = '';
+    if (!s.sorted.length) {
+      const li = document.createElement('li');
+      li.className = 'empty-state';
+      li.textContent = 'No nights logged yet — add your first one above.';
+      listEl.appendChild(li);
+      return;
+    }
+    s.sorted.slice(0, 30).forEach(function (e) {
+      const d = duration(e);
+      const pct = Math.min(100, Math.round(d / GOAL * 100));
+      const li = document.createElement('li');
+      li.className = 'gm-row';
+
+      const mid = document.createElement('div');
+      mid.className = 'gm-text';
+      mid.contentEditable = 'false';
+      mid.innerHTML = '';
+      const t1 = document.createElement('div'); t1.textContent = prettyDate(e.date);
+      const t2 = document.createElement('div'); t2.className = 'sleep-meta'; t2.textContent = e.bed + ' → ' + e.wake;
+      const bar = document.createElement('div'); bar.className = 'sleep-bar';
+      const fill = document.createElement('i');
+      fill.style.width = pct + '%';
+      if (d < 6 * 60) fill.className = 'bad'; else if (d < 7 * 60) fill.className = 'low';
+      bar.appendChild(fill);
+      mid.append(t1, t2, bar);
+
+      const dur = document.createElement('span');
+      dur.className = 'sleep-dur'; dur.textContent = fmt(d);
+
+      const del = document.createElement('button');
+      del.className = 'goal-delete'; del.type = 'button'; del.textContent = '×';
+      del.title = 'Delete';
+      del.addEventListener('click', function () {
+        save(load().filter(x => x.date !== e.date)); render();
+      });
+
+      li.append(mid, dur, del);
+      listEl.appendChild(li);
+    });
+  }
+
+  $('fDate').value = todayStr();
+  $('fAdd').addEventListener('click', function () {
+    const date = $('fDate').value, bed = $('fBed').value, wake = $('fWake').value;
+    if (!date || !bed || !wake) return;
+    const items = load().filter(x => x.date !== date);   // one entry per wake-up date
+    items.push({ date: date, bed: bed, wake: wake });
+    save(items);
+    render();
+  });
+
+  $('exportBtn').addEventListener('click', function () {
+    const blob = new Blob([JSON.stringify(load(), null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'sleep-backup.json';
+    a.click();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

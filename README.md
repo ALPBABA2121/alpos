@@ -19,6 +19,7 @@ Open any `.html` file directly in your browser — no build step, no install.
 | [template.html](template.html) | Starter template for building new pages or sections in the same design |
 | [health.html](health.html) | Supplement / daily stack tracker |
 | [po-water.html](po-water.html) | Water intake tracker |
+| [sleep.html](sleep.html) | Sleep log — bedtime, wake time, 7-night average and streak |
 | [finance.html](finance.html) | Finances |
 | [gym.html](gym.html) | Progressive overload gym tracker |
 | [topbar.js](topbar.js) | Shared top bar — auto-injected into pages that `<script src="topbar.js">` |

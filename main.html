@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#0F0E0C">
 <title>Alps Dashboard</title>
 <script src="topbar.js" defer></script>
 <style>
 :root {
-  --text-primary: #FAFAFA;
-  --text-secondary: #B8B6B0;
-  --text-tertiary: #76746E;
-  --success: #6BE3A4;
-  --warning: #F2C063;
-  --danger: #FF6B6B;
+  --text-primary: #EDE6D8;
+  --text-secondary: #B5AD9F;
+  --text-tertiary: #7D766A;
+  --success: #9DB89F;
+  --warning: #C9A96E;
+  --danger: #C98A7A;
   --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -21,7 +21,7 @@
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  background: #050506;
+  background: #0F0E0C;
   color: var(--text-secondary);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -38,7 +38,7 @@ body::before {
   content: '';
   position: fixed; inset: 0;
   background:
-    radial-gradient(circle at 82% 14%, rgba(224, 118, 88, 0.16), transparent 45%),
+    radial-gradient(circle at 82% 14%, rgba(201, 169, 110, 0.16), transparent 45%),
     radial-gradient(circle at 18% 90%, rgba(180, 180, 200, 0.06), transparent 50%);
   filter: blur(40px);
   pointer-events: none;
@@ -69,7 +69,7 @@ body::after {
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.025em;
-  background: linear-gradient(180deg, #FFFFFF 0%, #C7C4BC 120%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #CFC6B5 120%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -109,8 +109,8 @@ body::after {
 .goal-ticker-led { display: inline-flex; align-items: center; }
 .goal-ticker-led-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #6BE3A4;
-  box-shadow: 0 0 8px rgba(107,227,164,0.7);
+  background: #9DB89F;
+  box-shadow: 0 0 8px rgba(157, 184, 159,0.7);
   animation: led-pulse 1.6s ease-in-out infinite;
 }
 @keyframes led-pulse {
@@ -270,7 +270,7 @@ body::after {
 .gm-card.gm-all-done::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(107,227,164,0.10), transparent 60%);
+  background: radial-gradient(circle at 50% 0%, rgba(157, 184, 159,0.10), transparent 60%);
   pointer-events: none;
 }
 .gm-card.gm-all-done .gm-progress-num,
@@ -336,12 +336,12 @@ body::after {
   font-variant-numeric: tabular-nums;
 }
 .gm-streak.gm-streak-active {
-  background: rgba(242,192,99,0.10);
-  color: #F2C063;
-  border-color: rgba(242,192,99,0.32);
+  background: rgba(201, 169, 110,0.10);
+  color: #C9A96E;
+  border-color: rgba(201, 169, 110,0.32);
 }
 .gm-streak.gm-streak-active .gm-streak-icon {
-  filter: drop-shadow(0 0 6px rgba(242,192,99,0.6));
+  filter: drop-shadow(0 0 6px rgba(201, 169, 110,0.6));
 }
 
 .gm-bar {
@@ -357,8 +357,8 @@ body::after {
   transition: background 0.3s, box-shadow 0.3s;
 }
 .gm-bar-seg-done {
-  background: #6BE3A4;
-  box-shadow: 0 0 6px rgba(107,227,164,0.40);
+  background: #9DB89F;
+  box-shadow: 0 0 6px rgba(157, 184, 159,0.40);
 }
 
 .goal-list { list-style: none; margin: 0; padding: 0; }
@@ -382,22 +382,22 @@ body::after {
 .gm-row:hover { background: rgba(255,255,255,0.06); }
 .gm-row.gm-row-done {
   opacity: 0.45;
-  background: rgba(107,227,164,0.04);
+  background: rgba(157, 184, 159,0.04);
 }
 .gm-row.gm-row-done .gm-text {
   text-decoration: line-through;
   text-decoration-color: rgba(255,255,255,0.4);
 }
 .gm-row.gm-row-queued {
-  background: rgba(242,192,99,0.10);
-  box-shadow: inset 3px 0 0 0 #F2C063;
+  background: rgba(201, 169, 110,0.10);
+  box-shadow: inset 3px 0 0 0 #C9A96E;
 }
 .gm-row.gm-row-queued .gm-text { color: #FFE2A8; }
-.gm-row.is-drag-over { border-top: 2px solid #6BE3A4; }
+.gm-row.is-drag-over { border-top: 2px solid #9DB89F; }
 .gm-row.is-queue-flashing { animation: gm-queue-flash 0.48s ease-out; }
 @keyframes gm-queue-flash {
   0%   { background: rgba(255,255,255,0.035); transform: scale(1); }
-  40%  { background: rgba(242,192,99,0.32); transform: scale(1.015); }
+  40%  { background: rgba(201, 169, 110,0.32); transform: scale(1.015); }
   100% { background: rgba(255,255,255,0.035); transform: scale(1); }
 }
 
@@ -426,15 +426,15 @@ body::after {
   transition: background 0.2s, border-color 0.2s, box-shadow 0.25s;
 }
 .gm-check:checked {
-  background: #6BE3A4;
-  border-color: #6BE3A4;
-  box-shadow: 0 0 12px rgba(107,227,164,0.40);
+  background: #9DB89F;
+  border-color: #9DB89F;
+  box-shadow: 0 0 12px rgba(157, 184, 159,0.40);
 }
 .gm-check:checked::after {
   content: '';
   position: absolute; left: 6px; top: 2px;
   width: 6px; height: 11px;
-  border: solid #0A0A0B;
+  border: solid #0F0E0C;
   border-width: 0 2.5px 2.5px 0;
   transform: rotate(45deg);
   animation: gm-check-pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -472,9 +472,9 @@ body::after {
 }
 .gm-queue-btn:hover { opacity: 1; }
 .gm-queue-btn.gm-queue-active {
-  color: #F2C063;
+  color: #C9A96E;
   opacity: 1;
-  filter: drop-shadow(0 0 4px rgba(242,192,99,0.65));
+  filter: drop-shadow(0 0 4px rgba(201, 169, 110,0.65));
 }
 .gm-queue-btn:disabled { cursor: not-allowed; opacity: 0.3; }
 
@@ -551,7 +551,7 @@ body::after {
   padding: 11px 20px;
   border: 0; border-radius: 12px;
   background: linear-gradient(180deg, #FFFFFF 0%, #E8E5DD 100%);
-  color: #0A0A0B;
+  color: #0F0E0C;
   font-family: inherit; font-size: 13px; font-weight: 700;
   cursor: pointer;
   box-shadow:
@@ -593,6 +593,7 @@ body::after {
   .gm-progress-num { font-size: 36px; }
 }
 </style>
+<link rel="stylesheet" href="theme.css">
 </head>
 <body>
 <div class="page">
@@ -665,7 +666,7 @@ body::after {
       <div class="goal-input-wrap gm-input-wrap">
         <input id="goalInput" class="gm-input" type="text" placeholder="Add a goal for today…" autocomplete="off">
         <button type="button" id="goalAddBtn"    class="gm-add">+ Add</button>
-        <button type="button" id="goalPolishBtn" class="gm-polish">✨ Polish</button>
+        <button type="button" id="goalPolishBtn" class="gm-polish">Polish</button>
         <div class="gm-status" id="polishStatus"></div>
       </div>
     </div>
@@ -684,7 +685,7 @@ body::after {
       <div class="goal-input-wrap gm-input-wrap">
         <input id="tomorrowInput" class="gm-input" type="text" placeholder="Add a goal for tomorrow…" autocomplete="off">
         <button type="button" id="tomorrowAddBtn"    class="gm-add">+ Add</button>
-        <button type="button" id="tomorrowPolishBtn" class="gm-polish">✨ Polish</button>
+        <button type="button" id="tomorrowPolishBtn" class="gm-polish">Polish</button>
         <div class="gm-status" id="tomorrowStatus"></div>
       </div>
     </div>
@@ -873,15 +874,15 @@ body::after {
 
   // ---------- Day Ring ----------
   const PALETTE = [
-    [0,    [255, 216, 158]],
-    [12.5, [255, 205, 121]],
-    [25,   [255, 227, 143]],
-    [37.5, [255, 183, 106]],
-    [50,   [255, 149,  89]],
-    [62.5, [243, 111,  79]],
-    [75,   [226,  93, 122]],
-    [87.5, [123,  91, 176]],
-    [100,  [ 47,  58, 102]]
+    [0,    [233, 218, 186]],
+    [12.5, [222, 200, 156]],
+    [25,   [214, 186, 132]],
+    [37.5, [201, 169, 110]],
+    [50,   [196, 152, 104]],
+    [62.5, [190, 138, 112]],
+    [75,   [170, 130, 132]],
+    [87.5, [132, 128, 152]],
+    [100,  [ 92, 102, 128]]
   ];
   function lerp(a, b, t) { return a + (b - a) * t; }
   function paletteAt(p) {
@@ -931,7 +932,7 @@ body::after {
 
     if (hours < WAKE_HOUR) {
       fillEl.setAttribute('stroke-dashoffset', C);
-      fillEl.style.stroke = '#4D4B47';
+      fillEl.style.stroke = '#4F4A42';
       percentEl.textContent = '—';
       phaseEl.textContent   = 'SLEEPING';
       statusEl.textContent  = '😴 Still sleeping';
@@ -942,7 +943,7 @@ body::after {
 
     if (hours >= SLEEP_HOUR) {
       fillEl.setAttribute('stroke-dashoffset', 0);
-      fillEl.style.stroke = '#E25D7A';
+      fillEl.style.stroke = '#C98A7A';
       percentEl.textContent = '100%';
       phaseEl.textContent   = 'PAST BEDTIME';
       statusEl.textContent  = '⚠️ Past bedtime';
@@ -957,11 +958,11 @@ body::after {
     percentEl.textContent = Math.floor(percent) + '%';
 
     let phase, status;
-    if (percent < 25)      { phase = 'MORNING';   status = '☀️ Morning — fresh start'; }
-    else if (percent < 50) { phase = 'MIDDAY';    status = '⚡ Midday — keep moving'; }
-    else if (percent < 75) { phase = 'AFTERNOON'; status = '🔥 Afternoon — push it'; }
-    else if (percent < 90) { phase = 'EVENING';   status = '⏳ Evening — wrap up'; }
-    else                   { phase = 'BEDTIME';   status = '🌙 Bedtime soon'; }
+    if (percent < 25)      { phase = 'MORNING';   status = 'Morning — fresh start'; }
+    else if (percent < 50) { phase = 'MIDDAY';    status = 'Midday — keep moving'; }
+    else if (percent < 75) { phase = 'AFTERNOON'; status = 'Afternoon — push it'; }
+    else if (percent < 90) { phase = 'EVENING';   status = 'Evening — wrap up'; }
+    else                   { phase = 'BEDTIME';   status = 'Bedtime soon'; }
     phaseEl.textContent  = phase;
     statusEl.textContent = status;
 

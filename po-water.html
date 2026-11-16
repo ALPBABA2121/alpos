@@ -16,7 +16,7 @@ Contact: rowan.wisere@gmail.com
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0b">
+<meta name="theme-color" content="#0F0E0C">
 <title>Water Coach</title>
 <script src="topbar.js" defer></script>
 
@@ -58,25 +58,25 @@ const CONFIG = {
 
 <style>
 :root {
-  --bg: #0a0a0b;
-  --bg-card: #111113;
+  --bg: #0F0E0C;
+  --bg-card: #171512;
   --text-1: #ffffff;
   --text-2: rgba(255,255,255,0.6);
   --text-3: rgba(255,255,255,0.4);
   --text-4: rgba(255,255,255,0.25);
   --border: rgba(255,255,255,0.06);
   --border-strong: rgba(255,255,255,0.14);
-  --good: #6ee7b7;
-  --warn: #fbbf24;
-  --bad: #ff8a8a;
-  --info: #7DD3FC;
+  --good: #9DB89F;
+  --warn: #C9A96E;
+  --bad: #C98A7A;
+  --info: #93A6BE;
   --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SF Mono, Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, #14141a 0%, #0a0a0b 60%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, #171512 0%, #0F0E0C 60%);
   color: var(--text-1);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -164,7 +164,7 @@ html, body {
   border-radius: 14px;
   background: linear-gradient(90deg, var(--info), var(--good));
   transition: width 0.4s ease;
-  box-shadow: 0 0 18px rgba(110,231,183,0.18);
+  box-shadow: 0 0 18px rgba(157, 184, 159,0.18);
 }
 .water-bar-fill.over {
   background: linear-gradient(90deg, var(--good), var(--warn));
@@ -200,7 +200,7 @@ html, body {
 .water-minus-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .water-plus-btn {
   background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b; border: none; border-radius: 16px;
+  color: #0F0E0C; border: none; border-radius: 16px;
   font-family: inherit; font-size: 16px; font-weight: 700;
   cursor: pointer; padding: 16px;
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -269,7 +269,7 @@ html, body {
   height: 100%; background: linear-gradient(90deg, var(--info), var(--good));
   border-radius: 4px;
 }
-.hist-bar-fill.miss { background: rgba(255,138,138,0.4); }
+.hist-bar-fill.miss { background: rgba(201, 138, 122,0.4); }
 .hist-count {
   font-family: var(--font-mono); font-size: 12px;
   color: var(--text-2); font-variant-numeric: tabular-nums;
@@ -279,7 +279,7 @@ html, body {
 .spark-wrap { padding: 6px 0; }
 .spark-svg { width: 100%; height: 70px; display: block; }
 .spark-bar { fill: var(--good); }
-.spark-bar.miss { fill: rgba(255,138,138,0.5); }
+.spark-bar.miss { fill: rgba(201, 138, 122,0.5); }
 .spark-target {
   stroke: rgba(255,255,255,0.20);
   stroke-width: 1; stroke-dasharray: 3 3;
@@ -326,8 +326,8 @@ html, body {
 .field input[type="number"]::-webkit-outer-spin-button,
 .field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .field input:focus, .field select:focus {
-  border-color: rgba(110,231,183,0.40);
-  box-shadow: 0 0 0 2px rgba(110,231,183,0.10);
+  border-color: rgba(157, 184, 159,0.40);
+  box-shadow: 0 0 0 2px rgba(157, 184, 159,0.10);
 }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .seg {
@@ -344,7 +344,7 @@ html, body {
 }
 .seg button.active {
   background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b;
+  color: #0F0E0C;
 }
 
 /* ----- Stimulant search ----- */
@@ -355,7 +355,7 @@ html, body {
   color: var(--text-1); font-family: inherit; font-size: 14px;
   padding: 11px 14px; border-radius: 10px; outline: none;
 }
-.search-input:focus { border-color: rgba(110,231,183,0.40); }
+.search-input:focus { border-color: rgba(157, 184, 159,0.40); }
 .search-results {
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
   background: var(--bg-card);
@@ -429,7 +429,7 @@ html, body {
   width: 100%; padding: 13px;
   border: none;
   background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b; border-radius: 12px;
+  color: #0F0E0C; border-radius: 12px;
   font-family: inherit; font-size: 14px; font-weight: 700;
   cursor: pointer;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 14px rgba(0,0,0,0.40);
@@ -455,6 +455,7 @@ html, body {
   .water-num { font-size: 48px; }
 }
 </style>
+<link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -614,7 +615,7 @@ html, body {
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn-secondary" id="setExport">Export JSON</button>
         <button class="btn-secondary" id="setImport">Import JSON</button>
-        <button class="btn-secondary" id="setReset" style="color:var(--bad);border-color:rgba(255,138,138,0.3)">Reset all</button>
+        <button class="btn-secondary" id="setReset" style="color:var(--bad);border-color:rgba(201, 138, 122,0.3)">Reset all</button>
       </div>
       <input type="file" id="setImportFile" accept=".json" style="display:none">
     </div>

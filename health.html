@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#0F0E0C">
 <meta name="color-scheme" content="dark">
 <title>Daily Stack — Customizable Template</title>
 <script src="topbar.js" defer></script>
 <style>
 :root {
-  --bg: #050506;
+  --bg: #0F0E0C;
   --bg-card: rgba(255, 255, 255, 0.04);
   --bg-secondary: rgba(255, 255, 255, 0.035);
   --bg-input: rgba(0, 0, 0, 0.28);
@@ -20,10 +20,10 @@
   --border-soft: rgba(255, 255, 255, 0.04);
   --border-strong: rgba(255, 255, 255, 0.12);
 
-  --text-primary: #FAFAFA;
-  --text-secondary: #B8B6B0;
-  --text-tertiary: #76746E;
-  --text-quaternary: #4D4B47;
+  --text-primary: #EDE6D8;
+  --text-secondary: #B5AD9F;
+  --text-tertiary: #7D766A;
+  --text-quaternary: #4F4A42;
 
   --accent: #1D9E75;
   --accent-glow: rgba(29, 158, 117, 0.35);
@@ -51,7 +51,7 @@ body { min-height: 100vh; position: relative; overflow-x: hidden; }
 body::before {
   content: ''; position: fixed; inset: 0;
   background:
-    radial-gradient(60% 50% at 82% 14%, rgba(224, 118, 88, 0.16) 0%, transparent 60%),
+    radial-gradient(60% 50% at 82% 14%, rgba(201, 169, 110, 0.16) 0%, transparent 60%),
     radial-gradient(50% 40% at 18% 90%, rgba(180, 180, 200, 0.06) 0%, transparent 60%);
   filter: blur(40px);
   pointer-events: none; z-index: 0;
@@ -151,14 +151,14 @@ main {
 .stack-item.taken .stack-item-name { text-decoration: line-through; color: var(--text-tertiary); }
 
 @keyframes pulse-red {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50%      { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 138, 122, 0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(201, 138, 122, 0); }
 }
 .stack-item.missed {
-  border: 1px solid rgba(239, 68, 68, 0.45);
+  border: 1px solid rgba(201, 138, 122, 0.45);
   animation: pulse-red 1.5s ease-in-out infinite;
 }
-.stack-item.missed .stack-check { border-color: rgba(239, 68, 68, 0.55); }
+.stack-item.missed .stack-check { border-color: rgba(201, 138, 122, 0.55); }
 .stack-item.taken.missed { animation: none; border-color: transparent; }
 .stack-item.taken.missed .stack-check { border-color: var(--accent); }
 
@@ -254,9 +254,9 @@ main {
 }
 .stack-item:hover .stack-item-del { opacity: 1; }
 .stack-item-del:hover, .stack-item-del:active {
-  color: #FF6B6B;
-  border-color: rgba(239, 68, 68, 0.45);
-  background: rgba(239, 68, 68, 0.08);
+  color: #C98A7A;
+  border-color: rgba(201, 138, 122, 0.45);
+  background: rgba(201, 138, 122, 0.08);
   opacity: 1;
 }
 
@@ -283,18 +283,18 @@ main {
 .stack-ticker-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: #6BE3A4;
+  background: #9DB89F;
   flex-shrink: 0;
   transition: background 0.3s;
 }
 .stack-ticker.status-low .stack-ticker-dot { background: #FF8A4D; }
 .stack-ticker.status-missed .stack-ticker-dot {
-  background: #FF6B6B;
+  background: #C98A7A;
   animation: ticker-pulse 1.5s ease-in-out infinite;
 }
 @keyframes ticker-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-  50%      { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 138, 122, 0.5); }
+  50%      { box-shadow: 0 0 0 5px rgba(201, 138, 122, 0); }
 }
 .stack-ticker-label {
   font-family: var(--font-mono);
@@ -360,7 +360,7 @@ main {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.85);
   background: linear-gradient(180deg, #FFFFFF 0%, #E8E5DD 100%);
-  color: #0A0A0B;
+  color: #0F0E0C;
   font-weight: 700;
   letter-spacing: 0.005em;
   cursor: pointer;
@@ -443,12 +443,13 @@ main {
   .stack-search-results { width: 100%; }
 }
 
-::selection { background: rgba(224, 118, 88, 0.3); color: var(--text-primary); }
+::selection { background: rgba(201, 169, 110, 0.3); color: var(--text-primary); }
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 </style>
+<link rel="stylesheet" href="theme.css">
 </head>
 <body>
 

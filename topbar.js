@@ -26,9 +26,9 @@
   /* Fully opaque so each page's body background can't bleed through
      and tint the bar a different color. Matches the dashboard's base
      dark background so the bar feels continuous with the page chrome. */
-  background: #0a0a0b;
+  background: #0F0E0C;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 .topbar-pill {
   flex: 1 1 0; min-width: 0;
@@ -38,23 +38,37 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 11px;
   text-decoration: none;
-  color: #FAFAFA;
+  color: #EDE6D8;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.15s, border-color 0.15s;
 }
 .topbar-pill:hover { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.10); }
+.topbar-home {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 11px;
+  font-family: "Cormorant Garamond", Garamond, Georgia, serif;
+  font-size: 20px; font-weight: 500;
+  color: #C9A96E;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.3s, border-color 0.3s;
+}
+.topbar-home:hover { background: rgba(201, 169, 110, 0.10); border-color: rgba(201, 169, 110, 0.6); }
 .topbar-pill-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #6ee7b7; flex-shrink: 0;
+  background: #9DB89F; flex-shrink: 0;
 }
-.topbar-pill.warn .topbar-pill-dot { background: #fbbf24; }
+.topbar-pill.warn .topbar-pill-dot { background: #C9A96E; }
 .topbar-pill.miss .topbar-pill-dot {
-  background: #ff8a8a;
+  background: #C98A7A;
   animation: topbar-miss-pulse 1.6s ease-in-out infinite;
 }
 @keyframes topbar-miss-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-  50%      { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 138, 122, 0.5); }
+  50%      { box-shadow: 0 0 0 5px rgba(201, 138, 122, 0); }
 }
 .topbar-pill-label {
   font-size: 10px; font-weight: 700;
@@ -66,7 +80,7 @@
   margin-left: auto;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 12px; font-weight: 700;
-  color: #FAFAFA;
+  color: #EDE6D8;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -78,22 +92,22 @@
   flex: 1; min-width: 0;
   display: inline-flex; align-items: center; gap: 8px;
   padding: 8px 12px;
-  background: rgba(125, 211, 252, 0.07);
-  border: 1px solid rgba(125, 211, 252, 0.14);
+  background: rgba(147, 166, 190, 0.07);
+  border: 1px solid rgba(147, 166, 190, 0.14);
   border-right: none;
   border-radius: 11px 0 0 11px;
   text-decoration: none;
-  color: #FAFAFA;
+  color: #EDE6D8;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.15s;
 }
-.topbar-water-pill:hover { background: rgba(125, 211, 252, 0.12); }
-.topbar-water-pill .topbar-pill-dot { background: #7DD3FC; }
+.topbar-water-pill:hover { background: rgba(147, 166, 190, 0.12); }
+.topbar-water-pill .topbar-pill-dot { background: #93A6BE; }
 .topbar-water-add {
   flex: 0 0 auto;
   width: 38px;
-  border: 1px solid rgba(125, 211, 252, 0.14);
-  background: linear-gradient(180deg, rgba(125, 211, 252, 0.22), rgba(110, 231, 183, 0.22));
+  border: 1px solid rgba(147, 166, 190, 0.14);
+  background: linear-gradient(180deg, rgba(147, 166, 190, 0.22), rgba(157, 184, 159, 0.22));
   color: #FFFFFF;
   font-family: inherit; font-size: 17px; font-weight: 700;
   cursor: pointer;
@@ -102,13 +116,29 @@
   transition: background 0.15s, transform 0.10s;
 }
 .topbar-water-add:hover {
-  background: linear-gradient(180deg, rgba(125, 211, 252, 0.34), rgba(110, 231, 183, 0.34));
+  background: linear-gradient(180deg, rgba(147, 166, 190, 0.34), rgba(157, 184, 159, 0.34));
 }
 .topbar-water-add:active { transform: scale(0.94); }
 .topbar-water-add.flash {
-  background: linear-gradient(180deg, rgba(125, 211, 252, 0.65), rgba(110, 231, 183, 0.65));
+  background: linear-gradient(180deg, rgba(147, 166, 190, 0.65), rgba(157, 184, 159, 0.65));
 }
 
+@media (max-width: 760px) {
+  .topbar { gap: 4px; }
+  .topbar-pill, .topbar-water-pill { padding: 7px 9px; gap: 5px; }
+  .topbar-pill-label { font-size: 9px; letter-spacing: 0.10em; }
+  .topbar-pill-count { font-size: 11px; }
+  .topbar-water-wrap { flex: 1.35 1 0; }
+  .topbar-water-add { width: 30px; }
+  .topbar-home { width: 32px; font-size: 18px; }
+}
+@media (max-width: 600px) {
+  .topbar { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .topbar::-webkit-scrollbar { display: none; }
+  .topbar-pill, .topbar-water-wrap, .topbar-home { flex: 0 0 auto; }
+  .topbar-water-pill { flex: 0 0 auto; }
+  .topbar-pill-count { margin-left: 4px; }
+}
 @media (max-width: 480px) {
   .topbar { padding-left: 10px; padding-right: 10px; gap: 4px; }
   .topbar-pill, .topbar-water-pill { padding: 7px 9px; gap: 5px; }
@@ -169,6 +199,7 @@ body.topbar-modal-open {
   // -------- HTML --------
   const html = `
 <header class="topbar" id="topbar" role="navigation" aria-label="Quick stats">
+  <a href="index.html" class="topbar-home" aria-label="Home">A</a>
   <a href="main.html" class="topbar-pill" id="topbarGoals">
     <span class="topbar-pill-dot"></span>
     <span class="topbar-pill-label">GOALS</span>
